@@ -10,17 +10,18 @@ struct Object
 
 typedef std::vector<Object> vetor;
 
-int mochilaBinaria(int N, int W, vetor objs, int i)
+int mochilaBinaria(int N, int W, vetor objs, int i, int &num_leaf)
 {
     if (i == N)
     {
+        num_leaf++;
         return 0;
     }
-    int semItem = mochilaBinaria(N, W, objs, i + 1);
+    int semItem = mochilaBinaria(N, W, objs, i + 1, num_leaf);
     int comItem = semItem;
     if (W - objs[i].w >= 0)
     {
-        comItem = mochilaBinaria(N, W - objs[i].w, objs, i + 1) + objs[i].v;
+        comItem = mochilaBinaria(N, W - objs[i].w, objs, i + 1, num_leaf) + objs[i].v;
     }
     return std::max(comItem, semItem);
 }
@@ -36,6 +37,8 @@ int main()
         Object objInfo = {wi, vi};
         objs.push_back(objInfo);
     }
-    int resp = mochilaBinaria(N, W, objs, 0);
+    int num_leaf = 0;
+    int resp = mochilaBinaria(N, W, objs, 0, num_leaf);
+    std::cout << "NUM LEAF: " << num_leaf << std::endl;
     std::cout << resp << std::endl;
 }
