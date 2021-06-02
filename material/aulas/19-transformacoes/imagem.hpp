@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <string>
+#include <iostream>
 
 class Imagem {
     public:
@@ -20,7 +21,10 @@ class Imagem {
         std::ifstream inf(path);
         std::string first_line;
         std::getline(inf, first_line);
-        if (first_line != "P2") return Imagem(0, 0);
+        if (first_line != "P2\r") {
+            std::cout << "Impossível ler imagem" << std::endl;
+            return Imagem(0, 0);
+        }
 
         int rows, cols;
         inf >> cols;
@@ -29,6 +33,7 @@ class Imagem {
         Imagem img(rows, cols);
         int temp;
         inf >> temp;
+
         
         for (int k = 0; k < img.total_size; k++) {
             int t;
@@ -42,8 +47,14 @@ class Imagem {
     void write(std::string path) {
         std::ofstream of(path);
         of << "P2\n" << cols << " " <<  rows << " 255\n";
+        int count = 0;
         for (int k = 0; k < total_size; k++) {
             of << ((int) pixels[k]) << " ";
+            count++;
+            if (count >= cols) {
+                of << "\n";
+                count = 0;
+            }
         }
     }
 };
