@@ -13,6 +13,7 @@ struct fillRng {
 
     __device__ __host__
     double operator() (const int &i) {
+        rng.seed(i);
         return distribution(rng);
     }
 };
@@ -22,13 +23,13 @@ int main()
     thrust::uniform_real_distribution<double> dist(25, 40);
     thrust::default_random_engine rng;
     thrust::device_vector<double> dev(10, 0);
+    thrust::counting_iterator<int> iterator(0);
     thrust::transform(
-        dev.begin(),
-        dev.end(),
+        iterator,
+        iterator + dev.size(),
         dev.begin(),
         fillRng(dist, rng)
     );
-    
     for (auto i = dev.begin(); i != dev.end(); i++) {
         std::cout << *i << " "; // este acesso é lento! -- GPU
     }
